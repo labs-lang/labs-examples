@@ -9,7 +9,8 @@ LAbS language [[1]](#references). They may be analyzed with the
 
 ### `boids-[c?a?s?w].labs`
 
-These are several variants of the *boids* model of flocking behavior [].
+These are several variants of the *boids* model of flocking behavior
+[[2]](#references).
 Agents move in a 2D arena and try to agree on the direction of movement or
 on the *leader* of the flock (depending on the variant).
 
