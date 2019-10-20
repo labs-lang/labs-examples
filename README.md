@@ -21,6 +21,11 @@ for that file.
 The letter `w` denotes systems where the arena wraps around (i.e. an agent can
 cross the edge of the arena and get to the opposite side).
 
+### `formation.labs`
+
+Agents move on a line of size `_size` and attempt to reach a state where their distance from
+each other is at least `_delta`.
+
 ### `philosophers.labs`
 
 A LAbS implementation of the well-known dining philosophers problem.
