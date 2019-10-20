@@ -7,7 +7,7 @@ LAbS language [[1]](#references). They may be analyzed with the
 
 ## Description of the examples
 
-### `boids-[c?a?s?w].labs`
+### `boids-[c?a?s?w?].labs`
 
 These are several variants of the *boids* model of flocking behavior
 [[2]](#references).
