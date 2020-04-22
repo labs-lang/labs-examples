@@ -7,6 +7,15 @@ LAbS language [[1]](#references). They may be analyzed with the
 
 ## Description of the examples
 
+### `alpha.labs`
+
+A (tentative) implementation of the alpha-algorithm for swarm aggregation
+[[5]](#references).
+
+### `approx-majority.labs`
+
+Implements the *approximate majority* population protocol [[3]](#references).
+
 ### `boids-[c?a?s?w?].labs`
 
 These are several variants of the *boids* model of flocking behavior
@@ -26,19 +35,22 @@ cross the edge of the arena and get to the opposite side).
 Agents move on a line of size `_size` and attempt to reach a state where their distance from
 each other is at least `_delta`.
 
+### `leader.labs`
+
+A simple leader election over a stigmergy. Nodes repeatedly publish their own
+id on a stigmergic variable: the node with the lowest id (namely, 0) eventually
+is chosen as leader by all nodes.
+
+### `majority.labs`
+
+Implements a (correct) *majority* population protocol [[4]](#references).
+
 ### `philosophers.labs`
 
 A LAbS implementation of the well-known dining philosophers problem.
 This example showcases some LAbS features such as arrays and environment
 variables (which act as a shared memory) 
 
-### `approx-majority.labs`
-
-Implements the *approximate majority* population protocol [[3]](#references).
-
-### `majority.labs`
-
-Implements a (correct) *majority* population protocol [[4]](#references).
 
 ## Support
 
@@ -54,4 +66,6 @@ an [issue](https://github.com/labs-lang/labs-examples/issues).
 [3] D. Angluin, J. Aspnes, and D. Eisenstat, “A simple population protocol for fast robust approximate majority,” Distributed Computing, vol. 21, no. 2, pp. 87–102, 2008.
 
 [4] J. Aspnes and E. Ruppert, “An Introduction to Population Protocols,” in Middleware for Network Eccentric and Mobile Applications, B. Garbinato, H. Miranda, and L. E. T. Rodrigues, Eds. Springer, 2009, pp. 97–120.
+
+[5] A. F. T. Winfield, W. Liu, J. Nembrini, and A. Martinoli, “Modelling a wireless connected swarm of mobile robots,” Swarm Intelligence, vol. 2, no. 2–4, pp. 241–266, 2008, doi: 10.1007/s11721-008-0018-0.
 
