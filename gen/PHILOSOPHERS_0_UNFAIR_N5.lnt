@@ -295,7 +295,8 @@ process MAIN [monitor, action: Any] is
         var tid: Nat, a: Agent in
             for tid := 0 while tid < MAXCOMPONENTS by tid := tid + 1 loop
                 a := agents[tid].{id => ID(tid)};
-                agents[tid] := a; i
+                INITAGENT(!?a);
+                agents[tid] := a; action(a)
             end loop;
             e := Env(0);
             INITENV(!?e);
