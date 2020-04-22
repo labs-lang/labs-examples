@@ -1,0 +1,22 @@
+system {
+    extern = _n
+    spawn = Node: _n
+}
+
+stigmergy Election {
+    link = true
+    leader: _n
+}
+
+agent Node {
+    stigmergies = Election
+    Behavior = leader > id -> leader <~ id; Behavior
+
+}
+
+check {
+    P1 = 
+        finally forall Node a, forall Node b,
+            leader of a = leader of b
+}
+
