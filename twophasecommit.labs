@@ -1,0 +1,39 @@
+system {
+    extern = _workers
+    spawn = Coord: 1, Worker: _workers
+}
+
+stigmergy Voting {
+    link = true
+
+    vote: 0; agree: 0; disagree: 0
+}
+
+agent Worker {
+    stigmergies = Voting
+    # This worker always agrees to commit
+    # This implementation assumes that agent 0 is the Coord and
+    # agents 1, 2, ... _workers are the Workers
+    Behavior = 
+        (vote = 1 and agree = id-1 -> agree <~ agree + 1); Behavior
+}
+
+agent Coord {
+    interface = commit: 0; rollback: 0
+    stigmergies = Voting
+
+    Behavior =
+        commit, rollback <- 0, 0;
+        vote <~1;
+        (
+            (agree = _workers -> vote, agree, disagree <~ 0, 0, 0; commit <- 1) 
+            ++
+            (disagree > 0 -> vote, agree, disagree <~ 0, 0, 0; rollback <- 1)
+        ); Behavior
+}
+
+check {
+    NeverRollback = always forall Coord c, rollback of c = 0
+    #FinallyCommit = finally forall Coord c, commit of c = 1
+}
+
