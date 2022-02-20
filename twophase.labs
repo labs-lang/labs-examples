@@ -1,0 +1,45 @@
+# A two-phase commit system where workers use a stigmergy cariable to vote.
+# Notice that workers always agree to commmit the transaction.
+# For details, see:
+# L. Di Stefano and F. Lang, “Verifying Temporal Properties of Stigmergic 
+# Collective Systems Using CADP,” in Proceedings of ISoLA2021.
+# doi: 10.1007/978-3-030-89159-6_29.
+
+system {
+    extern = _workers
+    spawn = Coord: 1, Worker: _workers
+}
+
+stigmergy Voting {
+    link = true
+
+    vote: 0; agree: 0; disagree: 0
+}
+
+agent Worker {
+    stigmergies = Voting
+    # This worker always agrees to commit
+    # This implementation assumes that agent 0 is the Coord and
+    # agents 1, 2, ... _workers are the Workers
+    Behavior = 
+        (vote = 1 and agree = id-1 -> agree <~ min(agree + 1, _workers)); Behavior
+}
+
+agent Coord {
+    interface = commit: 0; rollback: 0
+    stigmergies = Voting
+
+    Behavior =
+        commit, rollback <- 0, 0;
+        vote <~1;
+        (
+            (agree = _workers -> vote, agree, disagree <~ 0, 0, 0; commit <- 1) 
+            ++
+            (disagree > 0 -> vote, agree, disagree <~ 0, 0, 0; rollback <- 1)
+        ); Behavior
+}
+
+check {
+    InfCommits = fairly_inf exists Coord c, commit of c = 1
+}
+
