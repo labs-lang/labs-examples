@@ -10,7 +10,7 @@ stigmergy Left {
         pos of c1 - pos of c2 >= 0 and
         pos of c1 - pos of c2 <= _range
 
-    idLeft: undef
+    idLeft: id
 }
 
 stigmergy Right {
@@ -18,7 +18,7 @@ stigmergy Right {
         pos of c2 - pos of c1 > 0 and
         pos of c2 - pos of c1 <= _range
 
-    idRight: undef
+    idRight: id
 
 }
 
@@ -31,14 +31,14 @@ agent Robot {
         idLeft, idRight <~ id, id;
         (
             (idLeft != id -> 
-                (pos > 0 -> pos <- pos - 1)
+                (pos > 0 -> pos <- max(pos - 1, 0))
                 ++
-                (pos = 0 -> pos <- pos + 1))
+                (pos = 0 -> pos <- min(pos + 1, _size)))
             ++
             (idRight != id ->
-                (pos < _size - 1  -> pos <- pos + 1)
+                (pos < _size - 1  -> pos <- min(pos + 1, _size))
                 ++
-                (pos = _size - 1 -> pos <- pos - 1))
+                (pos = _size - 1 -> pos <- max(pos - 1, 0)))
             ++
             (idRight = id and idLeft = id -> Skip)
         ); Behavior
