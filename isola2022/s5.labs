@@ -4,7 +4,6 @@ system {
 }
 
 agent Predator {
-    #interface = x: 0; y: 0; dirx: -2; diry: -2
     interface = x: 480; y:480; dirx: 3; diry: 3
     Behavior = Move; Behavior
     Move = {
@@ -19,7 +18,7 @@ agent Bird {
     Behavior = Move; Behavior
     Move = {
 
-        #CALCOLO PER NEMICI 
+        # Escape from predator
         e[] := pick 1 Predator;
         xe := (x of e[0]) + 2*(dirx of e[0]);
         ye := (y of e[0]) + 2*(dirx of e[0]);
@@ -32,6 +31,7 @@ agent Bird {
         edirx := if x=xe then 0 else if x>xe then xvel else -xvel;
         ediry := if y=ye then 0 else if y>ye then yvel else -yvel;
         
+        # Approach flockmate
         p[] := pick 1 Bird;
 
         pIsIsolated := 
