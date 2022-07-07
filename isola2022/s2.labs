@@ -1,0 +1,32 @@
+system {
+    extern = _birds, _grid
+    spawn = Bird: _birds
+}
+
+agent Bird {
+    interface = x: 0.._grid; y: 0.._grid; dirx: -2..3; diry: -2..3
+
+    Behavior = Move; Behavior
+    Move = {
+        p[] := pick 1;
+        dirx <- dirx of p[0];
+        diry <- diry of p[0];
+        x <- x + dirx;
+        y <- y + diry
+    }
+}
+
+assume {
+    GridCentre = forall Bird b,
+        (x of b) > 490 and (x of b) <= 510 and 
+        (y of b) > 490 and (y of b) <= 510
+    DifferentPositions = forall Bird b1, forall Bird b2,
+        (id of b1) = (id of b2) or
+        (x of b1) != (x of b2) or
+        (y of b1) != (y of b2)
+    DirectionNotNull = forall Bird b, ((dirx of b) != 0) or ((diry of b) != 0)
+}
+
+check {
+
+}

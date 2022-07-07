@@ -1,0 +1,57 @@
+system {
+    extern = _birds, _grid, _omega, _delta
+    spawn = Bird: _birds
+}
+
+agent Bird {
+    interface = x: 0.._grid; y: 0.._grid; dirx: -2..3; diry: -2..3
+
+    Behavior = Move; Behavior
+    Move = {
+        p[] := pick 1;
+
+        pIsIsolated := 
+            forall Bird b, (b = p[0]) or abs((x of b) - (x of p[0])) + abs((y of b) - (y of p[0])) > _delta;
+
+        aId := if pIsIsolated = 1 then id else p[0];
+
+
+        ax := (x of aId) + _omega * (dirx of aId);
+        ay := (y of aId) + _omega * (diry of aId);
+
+        sgnx := if x = ax then 0 else if x > ax then -1 else 1;
+        sgny := if y = ay then 0 else if y > ay then -1 else 1;
+
+        dx := abs(x-ax);
+        dy := abs(y-ay);
+
+        adirx := sgnx * if dy > dx then 1 else 2;
+        adiry := sgny * if dy < dx then 1 else 2;
+
+        # Average w/ current heading, for inertia
+        dirx <- (dirx + adirx) : 2;
+        diry <- (diry + adiry) : 2;
+        
+        xNext := x+dirx;
+        yNext := y+diry;
+        isFree := forall Bird b, ((x of b) != xNext) or ((y of b) != yNext);
+
+        x <- if isFree = 1 then x else xNext;
+        y <- if isFree = 1 then y else yNext
+    }
+}
+
+assume {
+    GridCentre = forall Bird b,
+        (x of b) > 490 and (x of b) <= 510 and 
+        (y of b) > 490 and (y of b) <= 510
+    DifferentPositions = forall Bird b1, forall Bird b2,
+        (id of b1) = (id of b2) or
+        (x of b1) != (x of b2) or
+        (y of b1) != (y of b2)
+    DirectionNotNull = forall Bird b, ((dirx of b) != 0) or ((diry of b) != 0)
+}
+
+check {
+
+}

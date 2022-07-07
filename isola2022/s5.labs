@@ -1,0 +1,83 @@
+system {
+    extern = _birds, _grid, _omega, _delta
+    spawn = Bird: _birds, Predator: 1
+}
+
+agent Predator {
+    #interface = x: 0; y: 0; dirx: -2; diry: -2
+    interface = x: 480; y:480; dirx: 3; diry: 3
+    Behavior = Move; Behavior
+    Move = {
+    x,y <- x+dirx, y+diry;
+    dirx, diry <- dirx, diry
+    }
+}
+
+agent Bird {
+    interface = x: 0.._grid; y: 0.._grid; dirx: -2..3; diry: -2..3
+
+    Behavior = Move; Behavior
+    Move = {
+
+        #CALCOLO PER NEMICI 
+        e[] := pick 1 Predator;
+        xe := (x of e[0]) + 2*(dirx of e[0]);
+        ye := (y of e[0]) + 2*(dirx of e[0]);
+        diste := abs(x - xe) + abs(y - ye);
+        diffxe := abs(x - xe);
+        diffye := abs(y - ye);
+        xvel := if diffye > diffxe then 1 else 2;
+        yvel := if diffye < diffxe then 1 else 2;
+
+        edirx := if x=xe then 0 else if x>xe then xvel else -xvel;
+        ediry := if y=ye then 0 else if y>ye then yvel else -yvel;
+        
+        p[] := pick 1 Bird;
+
+        pIsIsolated := 
+            forall Bird b, (b = p[0]) or abs((x of b) - (x of p[0])) + abs((y of b) - (y of p[0])) > _delta;
+
+        aId := if pIsIsolated = 1 then id else p[0];
+
+
+        ax := (x of aId) + _omega * (dirx of aId);
+        ay := (y of aId) + _omega * (diry of aId);
+
+        sgnx := if x = ax then 0 else if x > ax then -1 else 1;
+        sgny := if y = ay then 0 else if y > ay then -1 else 1;
+
+        dx := abs(x-ax);
+        dy := abs(y-ay);
+
+        adirx := sgnx * if dy > dx then 1 else 2;
+        adiry := sgny * if dy < dx then 1 else 2;
+        dirxd := if diste > _lambda then adirx else edirx;
+        diryd := if diste > _lambda then adiry else ediry;
+
+        # Average w/ current heading, for inertia
+        dirx <- (dirx + dirxd) : 2;
+        diry <- (diry + diryd) : 2;
+        
+        xNext := x+dirx;
+        yNext := y+diry;
+        isFree := forall Bird b, ((x of b) != xNext) or ((y of b) != yNext);
+
+        x <- if isFree = 1 then x else xNext;
+        y <- if isFree = 1 then y else yNext
+    }
+}
+
+assume {
+    GridCentre = forall Bird b,
+        (x of b) > 490 and (x of b) <= 510 and 
+        (y of b) > 490 and (y of b) <= 510
+    DifferentPositions = forall Bird b1, forall Bird b2,
+        (id of b1) = (id of b2) or
+        (x of b1) != (x of b2) or
+        (y of b1) != (y of b2)
+    DirectionNotNull = forall Bird b, ((dirx of b) != 0) or ((diry of b) != 0)
+}
+
+check {
+
+}
