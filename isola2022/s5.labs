@@ -62,8 +62,8 @@ agent Bird {
         yNext := y+diry;
         isFree := forall Bird b, ((x of b) != xNext) or ((y of b) != yNext);
 
-        x <- if isFree = 1 then x else xNext;
-        y <- if isFree = 1 then y else yNext
+        x <- if isFree then x else xNext;
+        y <- if isFree then y else yNext
     }
 }
 
