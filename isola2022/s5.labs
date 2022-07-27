@@ -1,5 +1,5 @@
 system {
-    extern = _birds, _grid, _omega, _delta
+    extern = _birds, _grid, _omega, _delta, _lambda
     spawn = Bird: _birds, Predator: 1
 }
 
