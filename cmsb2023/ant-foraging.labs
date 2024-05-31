@@ -1,0 +1,67 @@
+system {
+  extern = _size, _n, _foodx, _foody, _m, _k
+  environment = ph[_size, _size]: 0
+  spawn = Ant: _n
+}
+
+agent Ant {
+  interface = x: 0.._size; y: 0.._size; nextX: 0; nextY: 0
+
+  Behavior = 
+    Explore;
+    GoHome;
+    Behavior
+
+  GoHome =
+    x != 0 or y != _foody => ({
+    ph[x,y] <-- 1;
+    x <- max(0, x-1)
+    }; GoHome)
+
+  Explore = 
+    x != _foodx or y != _foody => (
+      SmellPheromone;
+      Move;
+      Explore)
+
+  SmellPheromone = {
+    dX := [1.._m+1];
+    dY := [1.._m+1];
+    testx1, testy1 := min(x+dX, _size - 1), min(y+dY, _size - 1);
+    testx2, testy2 := max(x-dX, 0), max(y-dY, 0);
+
+    nextX <- if ph[testx1, testy1] then testx1 else
+              if ph[testx2, testy2] then testx2 else x;
+    nextY <- if ph[testx1, testy1] then testy1 else
+              if ph[testx2, testy2] then testy2 else y
+  }
+
+  Move =
+    (nextX = x and nextY = y => {
+      dX, dY := [-_m.._m+1], [-_m.._m+1];
+      nextX <- x+dX;
+      nextY <- y+dY;
+      nextX <- max(nextX, 0);
+      nextY <- max(nextY, 0);
+      nextX <- min(nextX, _size-1);
+      nextY <- min(nextY, _size-1)
+    });
+    x, y <- nextX, nextY
+}
+
+assume {
+  FoodAnt = exists Ant a,
+    (x of a = _foodx) and (y of a = _foody)
+  FarFromThePath = forall Ant a, 
+    ((x of a = _foodx) and (y of a = _foody)) or
+    (x of a > _foodx + _k) or
+    (y of a > _foody + _k) or
+    (y of a < _foody - _k)
+}
+
+check {
+  Shortest_path = finally forall Ant a,
+    (x of a <= _foodx + _k) and
+    (y of a >= _foody - _k) and
+    (y of a <= _foody + _k)
+}
