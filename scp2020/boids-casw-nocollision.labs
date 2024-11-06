@@ -10,7 +10,7 @@ system {
 }
 
 stigmergy Cohesion {
-    link = (cnt of c1 >= counter of c2)
+    link = (counter of c1 >= counter of c2)
     
     leader, posX, posY, counter: id, -1, -1, 1
 }
