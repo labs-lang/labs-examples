@@ -1,0 +1,70 @@
+# Model of a clapping audience that tries to achieve a synchronized applause.
+
+system {
+    extern = _sz, _tmin, _tmax, _thresh
+    spawn = Agent: _sz * _sz
+}
+
+agent Agent {
+    interface = 
+        t: _tmin.._tmax;
+        cnt: 1.._tmax;
+        cntPrev: 1;
+        x: 0.._sz;
+        y: 0.._sz;
+        t_clap: -1;
+        sign: 1;
+        loudness: _thresh;
+        loudness_decr: _tmax
+
+    Behavior = cntPrev <- cnt; {
+        clapLevel := count Agent a, (cntPrev of a) = 0;
+        loudClap := if clapLevel >= loudness and (t_clap = -1 or t_clap >= 2*_tmin) then 1 else 0;
+        
+        # Compute new t
+        t_avg := (2*t + t_clap) : 4;
+        tNext := if loudClap = 1 and t_clap != -1 then t_avg else t;
+        tNext := min(max(_tmin, tNext), _tmax);
+        
+        # Change sign of cnt update if necessary
+        sign <- if cnt = 0 then 1 else if cnt >= tNext then -1 else sign;
+
+        cntNext :=
+            # I heard a clap (but i did not clap) so I try and align
+            if (loudClap = 1 and t_clap != -1 and cntPrev != 0) then 
+                if sign > 0 then 1 else cnt
+            # Just update my counter
+            else min(cnt + sign, tNext);
+        
+        # Update state
+        t <- tNext;
+        cnt <- cntNext;
+        loudness <- 
+            # If the clap is very loud, increase the threshold
+            if clapLevel > loudness then loudness + 1
+            # If I am not hearing loud claps, decrease the threshold
+            else if loudness_decr = 0 then max(loudness - 1, 2)
+            else loudness;
+        
+        loudness_decr <- 
+            if loudClap = 1 or loudness_decr = 0 then _tmax 
+            else loudness_decr - 1;
+
+        # Update loud clap counter
+        t_clap <- 
+            if loudClap then 0 
+            else if t_clap = -1 then -1
+            else min(2*_tmax, t_clap + 1)
+
+    }; Behavior
+}
+
+assume {
+    InitCnt = forall Agent a, 1 < (cnt of a) and (cnt of a) <= (t of a) - 1
+    #DiffCnt = forall Agent a, forall Agent b, (id of a) != (id of b) + 1 or (cnt of a) != (cnt of b)
+    DistinctXY = forall Agent a, forall Agent b, (id of a) = (id of b) or (x of a) != (x of b) or (y of a) != (y of b)
+}
+
+check {
+    Sync = finally forall Agent a, forall Agent b, (cnt of a) = (cnt of b) and (t of a) = (t of b) and (sign of a) = (sign of b)
+}
