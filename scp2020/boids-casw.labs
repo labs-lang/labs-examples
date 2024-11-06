@@ -1,12 +1,17 @@
+# A variant of the Boids algorithm from
+# C. W. Reynolds, “Flocks, herds and schools: A distributed behavioral model,” in 14th Annual Conference on Computer Graphics and Interactive Techniques (SIGGRAPH), Anaheim, CA, USA, 1987, vol. 21, pp. 25–34.
+# This variant implements Cohesion, Alignment, and Separation on a Wrap-around 2D grid
+# (i.e. an agent can cross the edge of the arena and get to the opposite side).
+
 system {
     extern = _birds, _grid, _delta
     spawn = Bird: _birds   
 }
 
 stigmergy Cohesion {
-    link = (count of c1 >= count of c2)
+    link = (counter of c1 >= counter of c2)
     
-    leader, posX, posY, count: id, -1, -1, 1
+    leader, posX, posY, counter: id, -1, -1, 1
 }
 
 stigmergy Separation {
@@ -49,11 +54,11 @@ agent Bird {
         # Leaders only signal their own position
         (leader = id -> posX, posY <~ x, y)
         ++
-        # Followers upgrade the count of their swarm
+        # Followers upgrade the counter of their swarm
         # Followers that are close to (posX,posY) ignore it
         # The others adapt dirX and/or dirY to point toward (posX, posY)
         (leader != id -> 
-            count <~ count + 1; (
+            counter <~ counter + 1; (
                 (abs(x - posX) > _delta -> dirX <~ (posX-x) / abs(posX-x))
                 ++
                 (abs(x - posX) <= _delta -> Skip)

@@ -1,3 +1,7 @@
+# A simple leader election over a stigmergy. Nodes repeatedly publish their own
+# id on a stigmergic variable: the node with the lowest id (namely, 0) eventually
+# is chosen as leader by all nodes.
+
 system {
     extern = _n
     spawn = Node: _n

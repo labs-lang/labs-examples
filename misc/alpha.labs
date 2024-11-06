@@ -1,3 +1,7 @@
+# A (tentative) implementation of the alpha-algorithm for swarm aggregation from:
+# A. F. T. Winfield, W. Liu, J. Nembrini, and A. Martinoli, “Modelling a wireless connected swarm of mobile robots,” Swarm Intelligence, vol. 2, no. 2–4, pp. 241–266, 2008, doi: 10.1007/s11721-008-0018-0. 
+
+
 system {
     extern = _n, _size, _alpha
     environment = occupancy[_size * _size]: 0

@@ -1,3 +1,8 @@
+# A variant of the Boids algorithm from
+# C. W. Reynolds, “Flocks, herds and schools: A distributed behavioral model,” in 14th Annual Conference on Computer Graphics and Interactive Techniques (SIGGRAPH), Anaheim, CA, USA, 1987, vol. 21, pp. 25–34.
+# This variant implements Alignment on a Wrap-around 2D grid
+# (i.e. an agent can cross the edge of the arena and get to the opposite side).
+
 system {
     extern = _birds, _grid, _delta
     spawn = Bird: _birds

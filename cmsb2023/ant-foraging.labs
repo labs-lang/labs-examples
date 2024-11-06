@@ -1,3 +1,5 @@
+# A simple model of pheromone-sensing foraging ants.
+
 system {
   extern = _size, _n, _foodx, _foody, _m, _k
   environment = ph[_size, _size]: 0

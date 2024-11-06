@@ -1,3 +1,7 @@
+# A LAbS implementation of the well-known dining philosophers problem.
+# This example showcases some LAbS features such as arrays and environment
+# variables (which act as a shared memory).
+
 system {
     extern = _n
     environment = fork[_n]: 0

@@ -1,3 +1,6 @@
+# A LAbS model of the classic double-bridge experiment described in:
+# S. Goss, S. Aron, J. L. Deneubourg, and J. M. Pasteels. 1989. Self-organized shortcuts in the Argentine ant. Naturwissenschaften 76, 1989. [Link](https://doi.org/10.1007/BF00462870)
+
 system {
     extern = _n, _gamma, _drop, _evap
     environment = ph[5]: 0; nextEvap: 1
